@@ -32,4 +32,6 @@ yarn-error.log*
 # os
 .DS_Store
 Thumbs.db
-vercel
+
+# vercel cli
+.vercel/
