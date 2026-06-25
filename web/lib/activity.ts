@@ -119,26 +119,26 @@ export type BadgeInfo = { activity: number; threshold: number; name: string };
  */
 export const BADGE_CATALOG: Record<number, BadgeInfo> = {
   // TxCount (activity = 0)
-  1:  { activity: 0, threshold: 20,   name: "Newcomer" },
-  2:  { activity: 0, threshold: 100,  name: "Regular" },
-  3:  { activity: 0, threshold: 500,  name: "Power User" },
-  4:  { activity: 0, threshold: 1000, name: "Heavy" },
+  1:  { activity: 0, threshold: 10,   name: "Newcomer" },
+  2:  { activity: 0, threshold: 20,   name: "Regular" },
+  3:  { activity: 0, threshold: 50,   name: "Power User" },
+  4:  { activity: 0, threshold: 100,  name: "Heavy" },
   // ContractsDeployed (1)
   5:  { activity: 1, threshold: 1,    name: "Builder" },
-  6:  { activity: 1, threshold: 5,    name: "Architect" },
-  7:  { activity: 1, threshold: 25,   name: "Shipwright" },
+  6:  { activity: 1, threshold: 3,    name: "Architect" },
+  7:  { activity: 1, threshold: 10,   name: "Shipwright" },
   // UniqueContracts (2)
-  8:  { activity: 2, threshold: 10,   name: "Wanderer" },
-  9:  { activity: 2, threshold: 50,   name: "Pathfinder" },
-  10: { activity: 2, threshold: 200,  name: "Cartographer" },
+  8:  { activity: 2, threshold: 5,    name: "Wanderer" },
+  9:  { activity: 2, threshold: 15,   name: "Pathfinder" },
+  10: { activity: 2, threshold: 50,   name: "Cartographer" },
   // WalletAgeDays (3)
-  11: { activity: 3, threshold: 7,    name: "Fresh" },
-  12: { activity: 3, threshold: 30,   name: "Settled" },
-  13: { activity: 3, threshold: 60,   name: "OG" },
+  11: { activity: 3, threshold: 3,    name: "Fresh" },
+  12: { activity: 3, threshold: 14,   name: "Settled" },
+  13: { activity: 3, threshold: 45,   name: "OG" },
   // ActiveDays (4)
-  14: { activity: 4, threshold: 7,    name: "Dedicated" },
-  15: { activity: 4, threshold: 30,   name: "Committed" },
-  16: { activity: 4, threshold: 100,  name: "Loyalist" },
+  14: { activity: 4, threshold: 3,    name: "Dedicated" },
+  15: { activity: 4, threshold: 7,    name: "Committed" },
+  16: { activity: 4, threshold: 30,   name: "Loyalist" },
 };
 
 export function measuredValueForBadge(badgeId: number, metrics: ActivityMetrics): number {

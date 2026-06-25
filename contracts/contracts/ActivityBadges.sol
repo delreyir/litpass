@@ -116,31 +116,31 @@ contract ActivityBadges is ERC1155, Ownable, EIP712 {
     }
 
     function _seedDefaultBadges() internal {
-        // Transactor — TX count milestones
-        defineBadge("Newcomer",  "20+ transactions on LitVM.",   "#22d3ee", ActivityType.TxCount, 20);
-        defineBadge("Regular",   "100+ transactions on LitVM.",  "#0891b2", ActivityType.TxCount, 100);
-        defineBadge("Power User","500+ transactions on LitVM.",  "#67e8f9", ActivityType.TxCount, 500);
-        defineBadge("Heavy",     "1000+ transactions on LitVM.", "#a78bfa", ActivityType.TxCount, 1000);
+        // Transactor — TX count milestones (reachable, not bot-only)
+        defineBadge("Newcomer",  "10+ transactions on LitVM.",   "#22d3ee", ActivityType.TxCount, 10);
+        defineBadge("Regular",   "20+ transactions on LitVM.",   "#0891b2", ActivityType.TxCount, 20);
+        defineBadge("Power User","50+ transactions on LitVM.",   "#67e8f9", ActivityType.TxCount, 50);
+        defineBadge("Heavy",     "100+ transactions on LitVM.",  "#a78bfa", ActivityType.TxCount, 100);
 
         // Builder — contracts deployed
         defineBadge("Builder",      "Deployed 1+ contract.",     "#fbbf24", ActivityType.ContractsDeployed, 1);
-        defineBadge("Architect",    "Deployed 5+ contracts.",    "#f97316", ActivityType.ContractsDeployed, 5);
-        defineBadge("Shipwright",   "Deployed 25+ contracts.",   "#ef4444", ActivityType.ContractsDeployed, 25);
+        defineBadge("Architect",    "Deployed 3+ contracts.",    "#f97316", ActivityType.ContractsDeployed, 3);
+        defineBadge("Shipwright",   "Deployed 10+ contracts.",   "#ef4444", ActivityType.ContractsDeployed, 10);
 
         // Explorer — unique contracts touched
-        defineBadge("Wanderer",   "Touched 10+ contracts.",      "#10b981", ActivityType.UniqueContracts, 10);
-        defineBadge("Pathfinder", "Touched 50+ contracts.",      "#14b8a6", ActivityType.UniqueContracts, 50);
-        defineBadge("Cartographer","Touched 200+ contracts.",    "#06b6d4", ActivityType.UniqueContracts, 200);
+        defineBadge("Wanderer",   "Touched 5+ contracts.",       "#10b981", ActivityType.UniqueContracts, 5);
+        defineBadge("Pathfinder", "Touched 15+ contracts.",      "#14b8a6", ActivityType.UniqueContracts, 15);
+        defineBadge("Cartographer","Touched 50+ contracts.",     "#06b6d4", ActivityType.UniqueContracts, 50);
 
         // Wallet age — days since first tx
-        defineBadge("Fresh",   "Wallet 7+ days old.",   "#e11d48", ActivityType.WalletAgeDays, 7);
-        defineBadge("Settled", "Wallet 30+ days old.",  "#fb7185", ActivityType.WalletAgeDays, 30);
-        defineBadge("OG",      "Wallet 60+ days old.",  "#f43f5e", ActivityType.WalletAgeDays, 60);
+        defineBadge("Fresh",   "Wallet 3+ days old.",   "#e11d48", ActivityType.WalletAgeDays, 3);
+        defineBadge("Settled", "Wallet 14+ days old.",  "#fb7185", ActivityType.WalletAgeDays, 14);
+        defineBadge("OG",      "Wallet 45+ days old.",  "#f43f5e", ActivityType.WalletAgeDays, 45);
 
         // Active days
-        defineBadge("Dedicated",  "7+ unique active days.",   "#a855f7", ActivityType.ActiveDays, 7);
-        defineBadge("Committed",  "30+ unique active days.",  "#7c3aed", ActivityType.ActiveDays, 30);
-        defineBadge("Loyalist",   "100+ unique active days.", "#6d28d9", ActivityType.ActiveDays, 100);
+        defineBadge("Dedicated",  "3+ unique active days.",   "#a855f7", ActivityType.ActiveDays, 3);
+        defineBadge("Committed",  "7+ unique active days.",   "#7c3aed", ActivityType.ActiveDays, 7);
+        defineBadge("Loyalist",   "30+ unique active days.",  "#6d28d9", ActivityType.ActiveDays, 30);
     }
 
     // --- Claim --------------------------------------------------------------
