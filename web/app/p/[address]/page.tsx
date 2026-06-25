@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isAddress, getAddress } from "viem";
 import { publicClient } from "@/lib/server";
-import { ADDR, litPassAbi, badgesAbi, referralAbi, stampsAbi } from "@/lib/contracts";
+import { ADDR, litPassAbi, badgesAbi, activityBadgesAbi, referralAbi, stampsAbi } from "@/lib/contracts";
 import { ProfileClient } from "@/components/profile/ProfileClient";
 
 type Params = Promise<{ address: string }>;
@@ -11,7 +11,7 @@ async function loadProfile(rawAddress: string) {
   if (!isAddress(rawAddress, { strict: false })) return null;
   const address = getAddress(rawAddress);
 
-  const [hasPass, pass, badgeCount, referrals, referrer] = await Promise.all([
+  const [hasPass, pass, streakBadgeCount, activityBadgeCount, referrals, referrer] = await Promise.all([
     publicClient.readContract({
       address: ADDR.LitPass,
       abi: litPassAbi,
@@ -30,6 +30,11 @@ async function loadProfile(rawAddress: string) {
       functionName: "badgeCount",
     }),
     publicClient.readContract({
+      address: ADDR.ActivityBadges,
+      abi: activityBadgesAbi,
+      functionName: "badgeCount",
+    }),
+    publicClient.readContract({
       address: ADDR.ReferralTracker,
       abi: referralAbi,
       functionName: "referralsOf",
@@ -43,35 +48,84 @@ async function loadProfile(rawAddress: string) {
     }),
   ]);
 
-  const badgeIds = Array.from({ length: Number(badgeCount) }, (_, i) => BigInt(i + 1));
-  let ownedBadges: { id: bigint; name: string; color: string; description: string }[] = [];
-  if (hasPass && badgeIds.length > 0) {
-    const balances = await Promise.all(
-      badgeIds.map((id) =>
-        publicClient.readContract({
-          address: ADDR.AchievementBadges,
-          abi: badgesAbi,
-          functionName: "balanceOf",
-          args: [address, id],
-        })
-      )
-    );
-    const owned = badgeIds.filter((_, i) => (balances[i] as bigint) > 0n);
-    if (owned.length > 0) {
-      const metas = await Promise.all(
-        owned.map((id) =>
+  type OwnedBadge = { id: number; family: "streak" | "activity"; name: string; description: string; color: string };
+  const owned: OwnedBadge[] = [];
+
+  if (hasPass) {
+    // Streak badges (AchievementBadges)
+    const streakIds = Array.from({ length: Number(streakBadgeCount) }, (_, i) => BigInt(i + 1));
+    if (streakIds.length > 0) {
+      const balances = await Promise.all(
+        streakIds.map((id) =>
           publicClient.readContract({
             address: ADDR.AchievementBadges,
             abi: badgesAbi,
-            functionName: "badges",
-            args: [id],
+            functionName: "balanceOf",
+            args: [address, id],
           })
         )
       );
-      ownedBadges = owned.map((id, i) => {
-        const m = metas[i] as readonly [string, string, string, number, number, boolean];
-        return { id, name: m[0], description: m[1], color: m[2] };
-      });
+      const heldIds = streakIds.filter((_, i) => (balances[i] as bigint) > 0n);
+      if (heldIds.length > 0) {
+        const metas = await Promise.all(
+          heldIds.map((id) =>
+            publicClient.readContract({
+              address: ADDR.AchievementBadges,
+              abi: badgesAbi,
+              functionName: "badges",
+              args: [id],
+            })
+          )
+        );
+        heldIds.forEach((id, i) => {
+          const m = metas[i] as readonly [string, string, string, number, number, boolean];
+          owned.push({
+            id: Number(id),
+            family: "streak",
+            name: m[0],
+            description: m[1],
+            color: m[2],
+          });
+        });
+      }
+    }
+
+    // Activity badges (ActivityBadges)
+    const actIds = Array.from({ length: Number(activityBadgeCount) }, (_, i) => BigInt(i + 1));
+    if (actIds.length > 0) {
+      const balances = await Promise.all(
+        actIds.map((id) =>
+          publicClient.readContract({
+            address: ADDR.ActivityBadges,
+            abi: activityBadgesAbi,
+            functionName: "balanceOf",
+            args: [address, id],
+          })
+        )
+      );
+      const heldIds = actIds.filter((_, i) => (balances[i] as bigint) > 0n);
+      if (heldIds.length > 0) {
+        const metas = await Promise.all(
+          heldIds.map((id) =>
+            publicClient.readContract({
+              address: ADDR.ActivityBadges,
+              abi: activityBadgesAbi,
+              functionName: "badges",
+              args: [id],
+            })
+          )
+        );
+        heldIds.forEach((id, i) => {
+          const m = metas[i] as readonly [string, string, string, number, number | bigint, boolean];
+          owned.push({
+            id: Number(id),
+            family: "activity",
+            name: m[0],
+            description: m[1],
+            color: m[2],
+          });
+        });
+      }
     }
   }
 
@@ -124,7 +178,7 @@ async function loadProfile(rawAddress: string) {
     currentStreak: Number((pass as { currentStreak: number }).currentStreak),
     longestStreak: Number((pass as { longestStreak: number }).longestStreak),
     totalCheckIns: Number((pass as { totalCheckIns: number }).totalCheckIns),
-    badges: ownedBadges.map((b) => ({ id: Number(b.id), name: b.name, description: b.description, color: b.color })),
+    badges: owned,
     stamps: activeStamps,
     referrals: Number(referrals),
     referrer: referrer as `0x${string}`,

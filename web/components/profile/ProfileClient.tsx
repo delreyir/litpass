@@ -22,7 +22,7 @@ import { ShareCard } from "@/components/profile/ShareCard";
 import { UsernameDialog } from "@/components/profile/UsernameDialog";
 import { shortAddress, formatRelative } from "@/lib/utils";
 
-type Badge = { id: number; name: string; description: string; color: string };
+type Badge = { id: number; family: "streak" | "activity"; name: string; description: string; color: string };
 type StampLite = { id: `0x${string}`; issuer: `0x${string}`; name: string; description: string };
 
 type Profile = {
@@ -224,8 +224,8 @@ export function ProfileClient({ profile }: { profile: Profile }) {
                 <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
                   {profile.badges.map((b) => (
                     <Link
-                      key={b.id}
-                      href={`/p/${profile.address}/badge/streak/${b.id}`}
+                      key={`${b.family}-${b.id}`}
+                      href={`/p/${profile.address}/badge/${b.family}/${b.id}`}
                       className="group flex flex-col items-center gap-2 rounded-xl border border-white/5 bg-white/[0.02] p-3 transition-all hover:border-white/10 hover:bg-white/[0.04]"
                     >
                       <div

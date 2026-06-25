@@ -1,11 +1,21 @@
 import { NextResponse } from "next/server";
+import { parseAbiItem } from "viem";
 import { publicClient } from "@/lib/server";
 import { ADDR, litPassAbi, DEPLOYMENT_BLOCK } from "@/lib/contracts";
 
-// Recompute every 30 seconds. New check-ins surface quickly without hammering
-// the RPC.
+// Recompute every 30 seconds.
 export const revalidate = 30;
 export const dynamic = "force-dynamic";
+
+const STREAK_BADGE_CLAIMED = parseAbiItem(
+  "event BadgeClaimed(address indexed user, uint256 indexed id)"
+);
+const ACTIVITY_BADGE_CLAIMED = parseAbiItem(
+  "event BadgeClaimed(address indexed user, uint256 indexed id, uint256 measuredValue)"
+);
+const REFERRED = parseAbiItem(
+  "event Referred(address indexed referrer, address indexed user, uint64 timestamp)"
+);
 
 type Entry = {
   address: `0x${string}`;
@@ -13,24 +23,43 @@ type Entry = {
   currentStreak: number;
   totalCheckIns: number;
   lastCheckIn: number;
+  badges: number;
+  referrals: number;
 };
 
 export async function GET() {
   try {
-    // Pull every CheckedIn event ever emitted by the LitPass contract.
-    // For testnet volume this is fine; once data grows, swap to a subgraph.
-    const logs = await publicClient.getContractEvents({
-      address: ADDR.LitPass,
-      abi: litPassAbi,
-      eventName: "CheckedIn",
-      fromBlock: DEPLOYMENT_BLOCK,
-      toBlock: "latest",
-    });
+    const [checkInLogs, streakClaims, activityClaims, refLogs] = await Promise.all([
+      publicClient.getContractEvents({
+        address: ADDR.LitPass,
+        abi: litPassAbi,
+        eventName: "CheckedIn",
+        fromBlock: DEPLOYMENT_BLOCK,
+        toBlock: "latest",
+      }),
+      publicClient.getLogs({
+        address: ADDR.AchievementBadges,
+        event: STREAK_BADGE_CLAIMED,
+        fromBlock: DEPLOYMENT_BLOCK,
+        toBlock: "latest",
+      }),
+      publicClient.getLogs({
+        address: ADDR.ActivityBadges,
+        event: ACTIVITY_BADGE_CLAIMED,
+        fromBlock: DEPLOYMENT_BLOCK,
+        toBlock: "latest",
+      }),
+      publicClient.getLogs({
+        address: ADDR.ReferralTracker,
+        event: REFERRED,
+        fromBlock: DEPLOYMENT_BLOCK,
+        toBlock: "latest",
+      }),
+    ]);
 
-    // For each owner, keep the latest event (highest timestamp). Its
-    // newStreak and totalCheckIns reflect the current on-chain state.
+    // Per-wallet aggregate state from the latest CheckedIn event
     const map = new Map<string, Entry>();
-    for (const log of logs) {
+    for (const log of checkInLogs) {
       const args = log.args as {
         owner?: `0x${string}`;
         tokenId?: bigint;
@@ -48,13 +77,56 @@ export async function GET() {
           currentStreak: Number(args.newStreak ?? 0),
           totalCheckIns: Number(args.totalCheckIns ?? 0),
           lastCheckIn: ts,
+          badges: prev?.badges ?? 0,
+          referrals: prev?.referrals ?? 0,
         });
       }
     }
 
+    // Helper to ensure an entry exists even if a wallet has badges/referrals
+    // but never checked in.
+    const ensure = (addr: `0x${string}`) => {
+      let e = map.get(addr);
+      if (!e) {
+        e = {
+          address: addr,
+          tokenId: "0",
+          currentStreak: 0,
+          totalCheckIns: 0,
+          lastCheckIn: 0,
+          badges: 0,
+          referrals: 0,
+        };
+        map.set(addr, e);
+      }
+      return e;
+    };
+
+    // Badges across both contracts
+    for (const log of streakClaims) {
+      const user = log.args.user as `0x${string}` | undefined;
+      if (!user) continue;
+      ensure(user).badges += 1;
+    }
+    for (const log of activityClaims) {
+      const user = log.args.user as `0x${string}` | undefined;
+      if (!user) continue;
+      ensure(user).badges += 1;
+    }
+
+    // Referrals
+    for (const log of refLogs) {
+      const referrer = log.args.referrer as `0x${string}` | undefined;
+      if (!referrer) continue;
+      ensure(referrer).referrals += 1;
+    }
+
+    // Final sort: by total check-ins, then current streak, then badges, then referrals.
     const entries = Array.from(map.values()).sort((a, b) => {
       if (b.totalCheckIns !== a.totalCheckIns) return b.totalCheckIns - a.totalCheckIns;
       if (b.currentStreak !== a.currentStreak) return b.currentStreak - a.currentStreak;
+      if (b.badges !== a.badges) return b.badges - a.badges;
+      if (b.referrals !== a.referrals) return b.referrals - a.referrals;
       return b.lastCheckIn - a.lastCheckIn;
     });
 
@@ -66,7 +138,6 @@ export async function GET() {
       },
       {
         headers: {
-          // Edge-cache for 30s so we don't re-query RPC on every hit.
           "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
         },
       }
