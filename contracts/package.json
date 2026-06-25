@@ -1,0 +1,23 @@
+{
+  "name": "litpass-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LitPass smart contracts for LitVM (Hardhat)",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:testnet": "hardhat run scripts/deploy.ts --network litvmTestnet",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "5.0.2",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.10",
+    "typescript": "^5.5.4",
+    "ts-node": "^10.9.2",
+    "@types/node": "^22.5.4",
+    "@types/mocha": "^10.0.7",
+    "@types/chai": "^4.3.19"
+  }
+}
