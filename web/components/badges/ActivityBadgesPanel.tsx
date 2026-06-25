@@ -3,8 +3,9 @@
 import { useAccount, useReadContract, useReadContracts, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ADDR, activityBadgesAbi } from "@/lib/contracts";
 import { ActivityBadgeCard } from "@/components/ActivityBadgeCard";
+import { BadgeClaimedModal, type ClaimedBadgeInfo } from "@/components/badges/BadgeClaimedModal";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 
@@ -23,6 +24,8 @@ export function ActivityBadgesPanel() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
   const [claimingId, setClaimingId] = useState<number | null>(null);
+  const [claimedBadge, setClaimedBadge] = useState<ClaimedBadgeInfo | null>(null);
+  const pendingClaim = useRef<{ id: number; name: string; description: string; color: string; measuredValue: number } | null>(null);
 
   const { data: count } = useReadContract({
     address: ADDR.ActivityBadges,
@@ -84,9 +87,22 @@ export function ActivityBadgesPanel() {
     balanceReads.refetch();
     confetti({ particleCount: 200, spread: 110, origin: { y: 0.5 }, colors: ["#22d3ee", "#a78bfa", "#fbbf24", "#fb7185"] });
     toast.success("Activity badge claimed");
+    if (pendingClaim.current && address) {
+      const p = pendingClaim.current;
+      setClaimedBadge({
+        family: "activity",
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        color: p.color,
+        measuredValue: p.measuredValue,
+        ownerAddress: address,
+      });
+      pendingClaim.current = null;
+    }
     setClaimingId(null);
     reset();
-  }, [isMined, balanceReads, reset]);
+  }, [isMined, balanceReads, reset, address]);
 
   useEffect(() => {
     if (error) {
@@ -115,6 +131,20 @@ export function ActivityBadgesPanel() {
         return;
       }
       const c = j.claim as { badgeId: number; measuredValue: number; nonce: number; expiresAt: number; signature: `0x${string}` };
+
+      // capture badge metadata to show in modal after the tx is mined
+      const idxBadge = ids.indexOf(badgeId);
+      const meta = metaReads.data?.[idxBadge]?.result as readonly [string, string, string, number, number | bigint, boolean] | undefined;
+      if (meta) {
+        pendingClaim.current = {
+          id: badgeId,
+          name: meta[0],
+          description: meta[1],
+          color: meta[2],
+          measuredValue: c.measuredValue,
+        };
+      }
+
       writeContract({
         address: ADDR.ActivityBadges,
         abi: activityBadgesAbi,
@@ -193,6 +223,8 @@ export function ActivityBadgesPanel() {
           </div>
         ))}
       </div>
+
+      <BadgeClaimedModal badge={claimedBadge} onClose={() => setClaimedBadge(null)} />
     </div>
   );
 }

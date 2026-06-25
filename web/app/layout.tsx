@@ -13,17 +13,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://litpass.vercel.app"),
   openGraph: {
     title: "LitPass - Soulbound passport for LitVM",
-    description:
-      "Mint your soulbound passport on Litecoin's first EVM L2. Daily streaks, 23 badges, cross-dApp stamps.",
-    url: "https://litpass.vercel.app",
-    siteName: "LitPass",
+    description: "The identity layer for Litecoin's first EVM L2.",
     type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "LitPass - Soulbound passport for LitVM",
-    description:
-      "Mint your soulbound passport on Litecoin's first EVM L2. Daily streaks, 23 badges, cross-dApp stamps.",
   },
 };
 
