@@ -11,13 +11,13 @@ type Params = Promise<{ address: string }>;
 
 export default async function OG({ params }: { params: Params }) {
   const { address } = await params;
-  const safe = isAddress(address) ? getAddress(address) : "0x0000000000000000000000000000000000000000";
+  const safe = isAddress(address, { strict: false }) ? getAddress(address) : "0x0000000000000000000000000000000000000000";
   const shortAddr = `${safe.slice(0, 6)}…${safe.slice(-4)}`;
 
   type PassData = { tokenId: bigint; mintedAt: bigint; lastCheckIn: bigint; currentStreak: number; longestStreak: number; totalCheckIns: number };
   let pass: PassData | null = null;
   let username = "";
-  if (isAddress(address)) {
+  if (isAddress(address, { strict: false })) {
     try {
       const [p, u] = await Promise.all([
         publicClient.readContract({

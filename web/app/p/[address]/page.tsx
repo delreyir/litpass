@@ -8,7 +8,7 @@ import { ProfileClient } from "@/components/profile/ProfileClient";
 type Params = Promise<{ address: string }>;
 
 async function loadProfile(rawAddress: string) {
-  if (!isAddress(rawAddress)) return null;
+  if (!isAddress(rawAddress, { strict: false })) return null;
   const address = getAddress(rawAddress);
 
   const [hasPass, pass, badgeCount, referrals, referrer] = await Promise.all([
@@ -133,7 +133,7 @@ async function loadProfile(rawAddress: string) {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { address } = await params;
-  if (!isAddress(address)) return { title: "LitPass · Profile" };
+  if (!isAddress(address, { strict: false })) return { title: "LitPass · Profile" };
   const short = `${address.slice(0, 6)}…${address.slice(-4)}`;
 
   const profile = await loadProfile(address).catch(() => null);
@@ -161,7 +161,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function ProfilePage({ params }: { params: Params }) {
   const { address } = await params;
-  if (!isAddress(address)) notFound();
+  if (!isAddress(address, { strict: false })) notFound();
   const profile = await loadProfile(address);
   if (!profile) notFound();
 
