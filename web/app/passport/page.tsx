@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ADDR, litPassAbi, referralAbi } from "@/lib/contracts";
@@ -286,8 +286,8 @@ function MintPanel({ onMint, pending }: { onMint: () => void; pending: boolean }
           </p>
 
           <ul className="mt-6 space-y-3 text-sm">
-            <Bullet>Free to mint — pay only LitVM gas</Bullet>
-            <Bullet>Lower IDs are minted first — be early</Bullet>
+            <Bullet>Free to mint - pay only LitVM gas</Bullet>
+            <Bullet>Lower IDs are minted first - be early</Bullet>
             <Bullet>100% on-chain SVG art, no IPFS</Bullet>
             <Bullet>Compatible with every LitVM dApp</Bullet>
           </ul>

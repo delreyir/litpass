@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -22,7 +22,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Aurora background — soft moving gradient behind the page */
+/* Aurora background - soft moving gradient behind the page */
 .aurora::before,
 .aurora::after {
   content: "";

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
@@ -6,12 +6,12 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "LitPass — Soulbound passport for LitVM",
+  title: "LitPass - Soulbound passport for LitVM",
   description:
     "Mint your soulbound passport on Litecoin's first EVM L2. Daily check-ins, on-chain streaks, achievement badges, and cross-dApp stamps.",
   keywords: ["LitVM", "Litecoin", "LitPass", "soulbound", "passport", "streak", "EAS", "reputation"],
   openGraph: {
-    title: "LitPass — Soulbound passport for LitVM",
+    title: "LitPass - Soulbound passport for LitVM",
     description: "The identity layer for Litecoin's first EVM L2.",
     type: "website",
   },

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { useReadContract } from "wagmi";
@@ -16,7 +16,7 @@ export function StatsRow() {
     {
       icon: Users,
       label: "Total passports",
-      value: total ? total.toString() : "—",
+      value: total ? total.toString() : "-",
       color: "text-accent",
     },
     {

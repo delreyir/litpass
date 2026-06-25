@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 
@@ -6,7 +6,7 @@ const steps = [
   {
     n: "01",
     title: "Mint your passport",
-    body: "Connect your wallet to LitVM LiteForge. Mint a soulbound passport in one transaction — your unique token ID is forever yours.",
+    body: "Connect your wallet to LitVM LiteForge. Mint a soulbound passport in one transaction - your unique token ID is forever yours.",
   },
   {
     n: "02",

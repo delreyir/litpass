@@ -1,4 +1,4 @@
-import { ethers, network } from "hardhat";
+﻿import { ethers, network } from "hardhat";
 import fs from "fs";
 import path from "path";
 
@@ -47,7 +47,7 @@ async function main() {
   // 5. ActivityBadges (requires a backend signer address)
   const signerAddr = process.env.ATTESTATION_SIGNER_ADDRESS;
   if (!signerAddr || signerAddr === "0x0000000000000000000000000000000000000000") {
-    throw new Error("Missing ATTESTATION_SIGNER_ADDRESS in .env — generate one and set it.");
+    throw new Error("Missing ATTESTATION_SIGNER_ADDRESS in .env - generate one and set it.");
   }
   const Activity = await ethers.getContractFactory("ActivityBadges");
   const activity = await Activity.deploy(deployer.address, passAddr, signerAddr);

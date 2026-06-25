@@ -1,11 +1,11 @@
-import type { Config } from "tailwindcss";
+﻿import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // LitPass palette — silver litecoin + electric cyan
+        // LitPass palette - silver litecoin + electric cyan
         ink: {
           950: "#05070d",
           900: "#080c18",

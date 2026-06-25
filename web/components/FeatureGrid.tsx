@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Shield, Flame, Stamp, Trophy, Activity, Users, Image as ImageIcon, Share2 } from "lucide-react";
@@ -19,7 +19,7 @@ const features = [
   {
     icon: Trophy,
     title: "7 streak badges",
-    body: "Spark, Flame, Inferno, Eternal, Voyager, Pathfinder, Legend — soulbound ERC-1155 minted automatically on milestones.",
+    body: "Spark, Flame, Inferno, Eternal, Voyager, Pathfinder, Legend - soulbound ERC-1155 minted automatically on milestones.",
     accent: "from-accent-violet to-accent",
   },
   {

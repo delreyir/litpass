@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useAccount, useReadContract, useReadContracts, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ADDR, activityBadgesAbi } from "@/lib/contracts";
@@ -228,7 +228,7 @@ function MetricTile({ label, value, loading, color }: { label: string; value?: n
     <div>
       <div className="font-mono text-[11px] uppercase tracking-widest text-silver-400">{label}</div>
       <div className="mt-2 font-display text-2xl font-bold" style={{ color: typeof value === "number" ? color : "#566280" }}>
-        {loading ? "…" : (typeof value === "number" ? value.toLocaleString() : "—")}
+        {loading ? "…" : (typeof value === "number" ? value.toLocaleString() : "-")}
       </div>
     </div>
   );

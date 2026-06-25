@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 import {ERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
@@ -22,7 +22,7 @@ interface ILitPassHasPass {
  *         the user submits that signature here to mint the badge.
  *
  *         The trusted signer is set by the contract owner. Anyone can verify
- *         signed claims on-chain — no extra trust needed beyond knowing who
+ *         signed claims on-chain - no extra trust needed beyond knowing who
  *         the signer is.
  */
 contract ActivityBadges is ERC1155, Ownable, EIP712 {
@@ -116,23 +116,23 @@ contract ActivityBadges is ERC1155, Ownable, EIP712 {
     }
 
     function _seedDefaultBadges() internal {
-        // Transactor — TX count milestones (reachable, not bot-only)
+        // Transactor - TX count milestones (reachable, not bot-only)
         defineBadge("Newcomer",  "10+ transactions on LitVM.",   "#22d3ee", ActivityType.TxCount, 10);
         defineBadge("Regular",   "20+ transactions on LitVM.",   "#0891b2", ActivityType.TxCount, 20);
         defineBadge("Power User","50+ transactions on LitVM.",   "#67e8f9", ActivityType.TxCount, 50);
         defineBadge("Heavy",     "100+ transactions on LitVM.",  "#a78bfa", ActivityType.TxCount, 100);
 
-        // Builder — contracts deployed
+        // Builder - contracts deployed
         defineBadge("Builder",      "Deployed 1+ contract.",     "#fbbf24", ActivityType.ContractsDeployed, 1);
         defineBadge("Architect",    "Deployed 3+ contracts.",    "#f97316", ActivityType.ContractsDeployed, 3);
         defineBadge("Shipwright",   "Deployed 10+ contracts.",   "#ef4444", ActivityType.ContractsDeployed, 10);
 
-        // Explorer — unique contracts touched
+        // Explorer - unique contracts touched
         defineBadge("Wanderer",   "Touched 5+ contracts.",       "#10b981", ActivityType.UniqueContracts, 5);
         defineBadge("Pathfinder", "Touched 15+ contracts.",      "#14b8a6", ActivityType.UniqueContracts, 15);
         defineBadge("Cartographer","Touched 50+ contracts.",     "#06b6d4", ActivityType.UniqueContracts, 50);
 
-        // Wallet age — days since first tx
+        // Wallet age - days since first tx
         defineBadge("Fresh",   "Wallet 3+ days old.",   "#e11d48", ActivityType.WalletAgeDays, 3);
         defineBadge("Settled", "Wallet 14+ days old.",  "#fb7185", ActivityType.WalletAgeDays, 14);
         defineBadge("OG",      "Wallet 45+ days old.",  "#f43f5e", ActivityType.WalletAgeDays, 45);

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+﻿// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -104,9 +104,9 @@ contract LitPass is ERC721, Ownable {
         uint64 last = p.lastCheckIn;
 
         if (last != 0) {
-            // same day window — block double check-in
+            // same day window - block double check-in
             if (_dayOf(nowTs) == _dayOf(last)) revert AlreadyCheckedInToday();
-            // consecutive day — extend streak. otherwise — reset to 1.
+            // consecutive day - extend streak. otherwise - reset to 1.
             if (_dayOf(nowTs) == _dayOf(last) + 1) {
                 unchecked { p.currentStreak += 1; }
             } else {

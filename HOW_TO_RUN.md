@@ -1,4 +1,4 @@
-# How to run LitPass
+﻿# How to run LitPass
 
 ## 1. Deploy contracts to LitVM Testnet
 
@@ -31,10 +31,10 @@ Open http://localhost:3000
 
 ## What you get
 
-- `/` — Animated landing page with passport preview, hero, features, CTA
-- `/passport` — Mint your passport + daily check-in with streak ring + confetti
-- `/badges` — All achievement badges, claim when eligible
-- `/leaderboard` — Stats + placeholder for indexer-based leaderboard
+- `/` - Animated landing page with passport preview, hero, features, CTA
+- `/passport` - Mint your passport + daily check-in with streak ring + confetti
+- `/badges` - All achievement badges, claim when eligible
+- `/leaderboard` - Stats + placeholder for indexer-based leaderboard
 
 ## Verify a contract on the explorer
 
@@ -47,9 +47,9 @@ For LitPass: `npx hardhat verify --network litvmTestnet 0x... <deployer> 3600`
 
 ## Common issues
 
-- **"insufficient funds"** — top up the deployer wallet from the testnet faucet.
-- **"nonce too low"** — wait for prior tx confirmation or reset the account.
-- **MetaMask warning about @react-native-async-storage** — harmless on web, ignore.
+- **"insufficient funds"** - top up the deployer wallet from the testnet faucet.
+- **"nonce too low"** - wait for prior tx confirmation or reset the account.
+- **MetaMask warning about @react-native-async-storage** - harmless on web, ignore.
 
 ## Day length
 

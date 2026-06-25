@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -47,7 +47,7 @@ export function LeaderboardClient() {
       <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
         <Stat icon={<Trophy className="h-5 w-5" />} label="Active users" value={data.total.toString()} />
         <Stat icon={<Flame className="h-5 w-5" />} label="Day length" value="1 hour" />
-        <Stat icon={<Award className="h-5 w-5" />} label="Top streak" value={data.entries[0]?.currentStreak?.toString() ?? "—"} />
+        <Stat icon={<Award className="h-5 w-5" />} label="Top streak" value={data.entries[0]?.currentStreak?.toString() ?? "-"} />
       </div>
 
       <motion.div

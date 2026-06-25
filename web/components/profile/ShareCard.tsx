@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,7 +12,7 @@ export function ShareCard({ address, tokenId, streak }: { address: `0x${string}`
   const [copied, setCopied] = useState(false);
 
   // If the viewer holds a passport, embed their address as referrer when they
-  // share someone else's profile — turning every share into a referral.
+  // share someone else's profile - turning every share into a referral.
   const refParam = viewer && !isOwner ? `?ref=${viewer}` : isOwner ? `?ref=${address}` : "";
   const url =
     typeof window !== "undefined"
@@ -20,8 +20,8 @@ export function ShareCard({ address, tokenId, streak }: { address: `0x${string}`
       : `https://litpass.vercel.app/p/${address}${refParam}`;
 
   const tweet = isOwner
-    ? `I just minted my LitPass #${tokenId.toString()} on LitVM — ${streak}-day streak and counting 🔥\n\nGet yours:`
-    : `Check out this LitPass on LitVM — ${streak}-day streak 🔥`;
+    ? `I just minted my LitPass #${tokenId.toString()} on LitVM - ${streak}-day streak and counting 🔥\n\nGet yours:`
+    : `Check out this LitPass on LitVM - ${streak}-day streak 🔥`;
 
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}&url=${encodeURIComponent(url)}`;
   const farcasterUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(tweet + " " + url)}`;
@@ -45,7 +45,7 @@ export function ShareCard({ address, tokenId, streak }: { address: `0x${string}`
     try {
       await navigator.share({ title: "LitPass", text: tweet, url });
     } catch {
-      // user cancelled — silent
+      // user cancelled - silent
     }
   };
 
