@@ -3,13 +3,13 @@
   "network": "litvmTestnet",
   "deployer": "0x731E3CB914891E0a73573De148908ab16a9dbeee",
   "dayLength": 86400,
-  "deploymentBlock": 22963975,
+  "deploymentBlock": 22989133,
   "contracts": {
-    "LitPass": "0x915c6f5B7203e47E26ff650aE6C34D18396BdB5f",
-    "AchievementBadges": "0xdcd9c323fE6A4D126eA450c715457DdD552843B0",
-    "StampRegistry": "0x7833a90d819bF16E26655D48BE44A350A1dCEd9d",
-    "ReferralTracker": "0xa64B406F5219de09E16260512A38FEb0a4D22cDC",
-    "ActivityBadges": "0x5cc6B8947dEC477d420F53f57C522a93c5977fF9"
+    "LitPass": "0x7f8746DD7814b58E02835fC52CE6Da07F0eb6A05",
+    "AchievementBadges": "0x82703f8B816125425c083FFeAa594115623484ab",
+    "StampRegistry": "0x269840106d875df4469aaFa3C48c784B20dbe584",
+    "ReferralTracker": "0xd8d4c122bdd22930Cc09a7cBfaaE6EB32Bf109c6",
+    "ActivityBadges": "0x1dEbCdbd8eEF8e478F2cc0A3C6C998c72ed94150"
   },
-  "deployedAt": "2026-06-25T18:19:24.129Z"
+  "deployedAt": "2026-06-25T19:09:03.297Z"
 }

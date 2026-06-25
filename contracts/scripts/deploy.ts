@@ -2,9 +2,8 @@ import { ethers, network } from "hardhat";
 import fs from "fs";
 import path from "path";
 
-// On LitVM testnet a "day" is 1 hour so users can test streaks quickly.
-// Set to 86400 (1 day) for mainnet.
-const TESTNET_DAY_LENGTH = 3600;
+// 24h day length for production. Tests inject their own value.
+const TESTNET_DAY_LENGTH = 86400;
 
 async function main() {
   const [deployer] = await ethers.getSigners();

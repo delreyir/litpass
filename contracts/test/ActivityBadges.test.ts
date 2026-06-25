@@ -53,7 +53,7 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
     // Spot check a few
     const b1 = await activity.badges(1);
     expect(b1.name).to.eq("Newcomer");
-    expect(b1.threshold).to.eq(20);
+    expect(b1.threshold).to.eq(10);
 
     const b5 = await activity.badges(5);
     expect(b5.name).to.eq("Builder");
@@ -68,7 +68,7 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
 
     const now = await time.latest();
     const expiresAt = now + 3600;
-    const measuredValue = 25; // > threshold of 20
+    const measuredValue = 15; // > threshold of 10
 
     const sig = await signClaim(activity, signer, alice.address, 1, measuredValue, 1, expiresAt);
 
@@ -81,8 +81,8 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
   it("requires a LitPass to claim", async () => {
     const { activity, signer, alice } = await deploy();
     const now = await time.latest();
-    const sig = await signClaim(activity, signer, alice.address, 1, 25, 1, now + 3600);
-    await expect(activity.connect(alice).claim(1, 25, 1, now + 3600, sig))
+    const sig = await signClaim(activity, signer, alice.address, 1, 15, 1, now + 3600);
+    await expect(activity.connect(alice).claim(1, 15, 1, now + 3600, sig))
       .to.be.revertedWithCustomError(activity, "NoPassport");
   });
 
@@ -90,8 +90,8 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
     const { activity, signer, alice, pass } = await deploy();
     await pass.connect(alice).mint();
     const now = await time.latest();
-    const sig = await signClaim(activity, signer, alice.address, 1, 10, 1, now + 3600);
-    await expect(activity.connect(alice).claim(1, 10, 1, now + 3600, sig))
+    const sig = await signClaim(activity, signer, alice.address, 1, 5, 1, now + 3600);
+    await expect(activity.connect(alice).claim(1, 5, 1, now + 3600, sig))
       .to.be.revertedWithCustomError(activity, "InsufficientValue");
   });
 
@@ -100,9 +100,9 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
     await pass.connect(alice).mint();
     const now = await time.latest();
     const expiresAt = now + 100;
-    const sig = await signClaim(activity, signer, alice.address, 1, 25, 1, expiresAt);
+    const sig = await signClaim(activity, signer, alice.address, 1, 15, 1, expiresAt);
     await time.increase(200);
-    await expect(activity.connect(alice).claim(1, 25, 1, expiresAt, sig))
+    await expect(activity.connect(alice).claim(1, 15, 1, expiresAt, sig))
       .to.be.revertedWithCustomError(activity, "ClaimExpired");
   });
 
@@ -111,8 +111,8 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
     await pass.connect(alice).mint();
     const now = await time.latest();
     // bob signs instead of the trusted signer
-    const sig = await signClaim(activity, bob, alice.address, 1, 25, 1, now + 3600);
-    await expect(activity.connect(alice).claim(1, 25, 1, now + 3600, sig))
+    const sig = await signClaim(activity, bob, alice.address, 1, 15, 1, now + 3600);
+    await expect(activity.connect(alice).claim(1, 15, 1, now + 3600, sig))
       .to.be.revertedWithCustomError(activity, "BadSignature");
   });
 
@@ -122,9 +122,9 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
     await pass.connect(bob).mint();
     const now = await time.latest();
     // signature is for alice
-    const sig = await signClaim(activity, signer, alice.address, 1, 25, 1, now + 3600);
+    const sig = await signClaim(activity, signer, alice.address, 1, 15, 1, now + 3600);
     // bob tries to use it
-    await expect(activity.connect(bob).claim(1, 25, 1, now + 3600, sig))
+    await expect(activity.connect(bob).claim(1, 15, 1, now + 3600, sig))
       .to.be.revertedWithCustomError(activity, "BadSignature");
   });
 
@@ -132,9 +132,9 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
     const { activity, signer, alice, pass } = await deploy();
     await pass.connect(alice).mint();
     const now = await time.latest();
-    const sig = await signClaim(activity, signer, alice.address, 1, 25, 1, now + 3600);
-    await activity.connect(alice).claim(1, 25, 1, now + 3600, sig);
-    await expect(activity.connect(alice).claim(1, 25, 1, now + 3600, sig))
+    const sig = await signClaim(activity, signer, alice.address, 1, 15, 1, now + 3600);
+    await activity.connect(alice).claim(1, 15, 1, now + 3600, sig);
+    await expect(activity.connect(alice).claim(1, 15, 1, now + 3600, sig))
       .to.be.revertedWithCustomError(activity, "AlreadyClaimed");
   });
 
@@ -142,8 +142,8 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
     const { activity, signer, alice, bob, pass } = await deploy();
     await pass.connect(alice).mint();
     const now = await time.latest();
-    const sig = await signClaim(activity, signer, alice.address, 1, 25, 1, now + 3600);
-    await activity.connect(alice).claim(1, 25, 1, now + 3600, sig);
+    const sig = await signClaim(activity, signer, alice.address, 1, 15, 1, now + 3600);
+    await activity.connect(alice).claim(1, 15, 1, now + 3600, sig);
     await expect(
       activity.connect(alice).safeTransferFrom(alice.address, bob.address, 1, 1, "0x")
     ).to.be.revertedWithCustomError(activity, "SoulboundNonTransferable");
@@ -158,8 +158,8 @@ describe("ActivityBadges (EIP-712 attestations)", () => {
 
     const now = await time.latest();
     // bob signs as the new signer
-    const sig = await signClaim(activity, bob, alice.address, 1, 25, 1, now + 3600);
-    await activity.connect(alice).claim(1, 25, 1, now + 3600, sig);
+    const sig = await signClaim(activity, bob, alice.address, 1, 15, 1, now + 3600);
+    await activity.connect(alice).claim(1, 15, 1, now + 3600, sig);
     expect(await activity.balanceOf(alice.address, 1)).to.eq(1);
   });
 });

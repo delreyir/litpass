@@ -56,16 +56,16 @@ describe("LitPass + Badges + Stamps + Referrals", () => {
       await pass.connect(alice).checkIn();
       expect((await pass.getPass(alice.address)).currentStreak).to.eq(1);
 
-      // double check-in same day: blocked
+      // double check-in same day window: blocked
       await expect(pass.connect(alice).checkIn())
         .to.be.revertedWithCustomError(pass, "AlreadyCheckedInToday");
 
-      // next day → streak = 2
+      // wait exactly 1 day → streak = 2
       await time.increase(dayLength);
       await pass.connect(alice).checkIn();
       expect((await pass.getPass(alice.address)).currentStreak).to.eq(2);
 
-      // skip 2 days → streak resets to 1
+      // wait more than 2 days → streak resets to 1
       await time.increase(dayLength * 3);
       await pass.connect(alice).checkIn();
       const p = await pass.getPass(alice.address);

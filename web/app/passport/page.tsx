@@ -1,7 +1,7 @@
 "use client";
 
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { ADDR, litPassAbi, referralAbi } from "@/lib/contracts";
+import { ADDR, litPassAbi, referralAbi, DAY_LENGTH } from "@/lib/contracts";
 import { motion, AnimatePresence } from "framer-motion";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { PassportCard } from "@/components/PassportCard";
@@ -222,7 +222,7 @@ export default function PassportPage() {
                     exit={{ opacity: 0, y: -8 }}
                     className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 font-semibold text-silver-200"
                   >
-                    Already checked in. Next in <Countdown until={Number(pass?.lastCheckIn ?? 0) + 3600} />
+                    Already checked in. Next in <Countdown until={nextCheckInTimestamp(Number(pass?.lastCheckIn ?? 0))} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -319,4 +319,11 @@ function Bullet({ children }: { children: React.ReactNode }) {
       <span>{children}</span>
     </li>
   );
+}
+
+// The next check-in is the start of the next "day window".
+// Matches the contract logic: floor(lastCheckIn / DAY_LENGTH + 1) * DAY_LENGTH.
+function nextCheckInTimestamp(lastCheckIn: number): number {
+  if (lastCheckIn === 0) return 0;
+  return (Math.floor(lastCheckIn / DAY_LENGTH) + 1) * DAY_LENGTH;
 }

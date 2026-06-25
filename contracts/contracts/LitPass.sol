@@ -104,10 +104,12 @@ contract LitPass is ERC721, Ownable {
         uint64 last = p.lastCheckIn;
 
         if (last != 0) {
-            // same day window - block double check-in
-            if (_dayOf(nowTs) == _dayOf(last)) revert AlreadyCheckedInToday();
-            // consecutive day - extend streak. otherwise - reset to 1.
-            if (_dayOf(nowTs) == _dayOf(last) + 1) {
+            uint64 elapsed = nowTs - last;
+            // Less than a full day since last check-in: blocked.
+            if (elapsed < dayLength) revert AlreadyCheckedInToday();
+            // Between 1 and 2 day lengths: streak extends.
+            // More than 2 day lengths: streak resets to 1 (you missed a day).
+            if (elapsed <= 2 * dayLength) {
                 unchecked { p.currentStreak += 1; }
             } else {
                 p.currentStreak = 1;
@@ -137,7 +139,7 @@ contract LitPass is ERC721, Ownable {
         if (tokenId == 0) return false;
         uint64 last = passes[tokenId].lastCheckIn;
         if (last == 0) return true;
-        return _dayOf(uint64(block.timestamp)) > _dayOf(last);
+        return uint64(block.timestamp) >= last + dayLength;
     }
 
     function nextCheckInAt(address user) external view returns (uint64) {
@@ -145,8 +147,7 @@ contract LitPass is ERC721, Ownable {
         if (tokenId == 0) return 0;
         uint64 last = passes[tokenId].lastCheckIn;
         if (last == 0) return uint64(block.timestamp);
-        uint64 d = _dayOf(last);
-        return (d + 1) * dayLength;
+        return last + dayLength;
     }
 
     function getPass(address user) external view returns (Pass memory) {
