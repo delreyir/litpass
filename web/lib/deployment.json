@@ -2,7 +2,7 @@
   "chainId": 4441,
   "network": "litvmTestnet",
   "deployer": "0x731E3CB914891E0a73573De148908ab16a9dbeee",
-  "dayLength": 3600,
+  "dayLength": 86400,
   "deploymentBlock": 22963975,
   "contracts": {
     "LitPass": "0x915c6f5B7203e47E26ff650aE6C34D18396BdB5f",

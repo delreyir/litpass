@@ -1,4 +1,4 @@
-﻿# How to run LitPass
+# How to run LitPass
 
 ## 1. Deploy contracts to LitVM Testnet
 

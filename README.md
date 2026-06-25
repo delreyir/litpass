@@ -1,4 +1,4 @@
-﻿# LitPass
+# LitPass
 
 The on-chain identity & reputation layer for **LitVM** - Litecoin's first EVM-compatible Layer-2.
 

@@ -1,9 +1,10 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { inter, sora, jetbrainsMono } from "./fonts";
 
 export const metadata: Metadata = {
   title: "LitPass - Soulbound passport for LitVM",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable}`}>
       <body className="aurora min-h-screen bg-ink-950 text-silver-100 antialiased">
         <Providers>
           <div className="relative">

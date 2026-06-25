@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ADDR, litPassAbi, referralAbi } from "@/lib/contracts";

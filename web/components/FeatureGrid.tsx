@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { Shield, Flame, Stamp, Trophy, Activity, Users, Image as ImageIcon, Share2 } from "lucide-react";
