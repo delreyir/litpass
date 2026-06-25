@@ -6,6 +6,7 @@ export const ADDR = deployment.contracts as {
   StampRegistry: `0x${string}`;
   ReferralTracker: `0x${string}`;
   ActivityBadges: `0x${string}`;
+  Usernames: `0x${string}`;
 };
 
 export const DAY_LENGTH = deployment.dayLength as number;
@@ -145,4 +146,36 @@ export const activityBadgesAbi = [
     ],
   },
   { type: "function", name: "signer", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] },
+] as const;
+
+export const usernamesAbi = [
+  {
+    type: "function",
+    name: "setUsername",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "name", type: "string" }],
+    outputs: [],
+  },
+  { type: "function", name: "clear", stateMutability: "nonpayable", inputs: [], outputs: [] },
+  {
+    type: "function",
+    name: "usernameOf",
+    stateMutability: "view",
+    inputs: [{ type: "address" }],
+    outputs: [{ type: "string" }],
+  },
+  {
+    type: "function",
+    name: "ownerOf",
+    stateMutability: "view",
+    inputs: [{ name: "name", type: "string" }],
+    outputs: [{ type: "address" }],
+  },
+  {
+    type: "function",
+    name: "isAvailable",
+    stateMutability: "view",
+    inputs: [{ name: "name", type: "string" }],
+    outputs: [{ type: "bool" }],
+  },
 ] as const;

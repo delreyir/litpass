@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { isAddress, getAddress } from "viem";
 import { publicClient } from "@/lib/server";
-import { ADDR, litPassAbi } from "@/lib/contracts";
+import { ADDR, litPassAbi, usernamesAbi } from "@/lib/contracts";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
@@ -12,31 +12,35 @@ type Params = Promise<{ address: string }>;
 export default async function OG({ params }: { params: Params }) {
   const { address } = await params;
   const safe = isAddress(address) ? getAddress(address) : "0x0000000000000000000000000000000000000000";
-  const short = `${safe.slice(0, 6)}…${safe.slice(-4)}`;
+  const shortAddr = `${safe.slice(0, 6)}…${safe.slice(-4)}`;
 
-  type PassData = {
-    tokenId: bigint;
-    mintedAt: bigint;
-    lastCheckIn: bigint;
-    currentStreak: number;
-    longestStreak: number;
-    totalCheckIns: number;
-  };
+  type PassData = { tokenId: bigint; mintedAt: bigint; lastCheckIn: bigint; currentStreak: number; longestStreak: number; totalCheckIns: number };
   let pass: PassData | null = null;
+  let username = "";
   if (isAddress(address)) {
     try {
-      const p = await publicClient.readContract({
-        address: ADDR.LitPass,
-        abi: litPassAbi,
-        functionName: "getPass",
-        args: [safe],
-      });
+      const [p, u] = await Promise.all([
+        publicClient.readContract({
+          address: ADDR.LitPass,
+          abi: litPassAbi,
+          functionName: "getPass",
+          args: [safe],
+        }),
+        publicClient.readContract({
+          address: ADDR.Usernames,
+          abi: usernamesAbi,
+          functionName: "usernameOf",
+          args: [safe],
+        }),
+      ]);
       pass = p as PassData;
+      username = (u as string) || "";
     } catch {
       pass = null;
     }
   }
   const hasPass = !!pass && pass.tokenId > 0n;
+  const displayName = username ? `@${username}` : shortAddr;
 
   return new ImageResponse(
     (
@@ -112,9 +116,12 @@ export default async function OG({ params }: { params: Params }) {
           {hasPass ? (
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", fontSize: 28, color: "#7c8aa8", marginBottom: 8 }}>
-                #{pass!.tokenId.toString()} · {short}
+                #{pass!.tokenId.toString()} · {shortAddr}
               </div>
               <div style={{ display: "flex", fontSize: 96, fontWeight: 800, letterSpacing: -2, lineHeight: 1 }}>
+                {displayName}
+              </div>
+              <div style={{ display: "flex", marginTop: 14, fontSize: 32, color: "#22d3ee" }}>
                 {pass!.currentStreak}-day streak
               </div>
               <div style={{ marginTop: 40, display: "flex", gap: 64 }}>
@@ -126,7 +133,7 @@ export default async function OG({ params }: { params: Params }) {
           ) : (
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", fontSize: 28, color: "#7c8aa8", marginBottom: 8 }}>
-                {short}
+                {shortAddr}
               </div>
               <div style={{ display: "flex", fontSize: 80, fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.1 }}>
                 No passport yet.

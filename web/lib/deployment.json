@@ -9,7 +9,8 @@
     "AchievementBadges": "0x82703f8B816125425c083FFeAa594115623484ab",
     "StampRegistry": "0x269840106d875df4469aaFa3C48c784B20dbe584",
     "ReferralTracker": "0xd8d4c122bdd22930Cc09a7cBfaaE6EB32Bf109c6",
-    "ActivityBadges": "0x1dEbCdbd8eEF8e478F2cc0A3C6C998c72ed94150"
+    "ActivityBadges": "0x1dEbCdbd8eEF8e478F2cc0A3C6C998c72ed94150",
+    "Usernames": "0xcdC3241d5B1F2802500d685b2fb5f121129C2F42"
   },
-  "deployedAt": "2026-06-25T19:09:03.297Z"
+  "deployedAt": "2026-06-25T19:15:23.196Z"
 }
