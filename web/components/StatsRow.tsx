@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useReadContract } from "wagmi";
 import { ADDR, litPassAbi } from "@/lib/contracts";
-import { Users, Flame, Trophy } from "lucide-react";
+import { Users, Trophy, Activity } from "lucide-react";
 
 export function StatsRow() {
   const { data: total } = useReadContract({
@@ -20,15 +20,15 @@ export function StatsRow() {
       color: "text-accent",
     },
     {
-      icon: Flame,
-      label: "Daily check-ins available",
-      value: "every 1h",
+      icon: Trophy,
+      label: "Streak badges",
+      value: "7",
       color: "text-accent-gold",
     },
     {
-      icon: Trophy,
-      label: "Achievement badges",
-      value: "7",
+      icon: Activity,
+      label: "Activity badges",
+      value: "16",
       color: "text-accent-violet",
     },
   ];

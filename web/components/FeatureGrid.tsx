@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Shield, Flame, Stamp, Trophy, Network, Sparkles } from "lucide-react";
+import { Shield, Flame, Stamp, Trophy, Activity, Users, Image as ImageIcon, Share2 } from "lucide-react";
 
 const features = [
   {
@@ -18,27 +18,39 @@ const features = [
   },
   {
     icon: Trophy,
-    title: "Achievement badges",
-    body: "Hit 3-day, 7-day, 30-day, 100-day streaks. Earn permanent soulbound badges on-chain.",
+    title: "7 streak badges",
+    body: "Spark, Flame, Inferno, Eternal, Voyager, Pathfinder, Legend — soulbound ERC-1155 minted automatically on milestones.",
     accent: "from-accent-violet to-accent",
+  },
+  {
+    icon: Activity,
+    title: "16 activity badges",
+    body: "Earned from real on-chain history: tx count, contracts deployed, wallet age, active days. EIP-712 signed by a public attestor.",
+    accent: "from-accent-deep to-accent-violet",
   },
   {
     icon: Stamp,
     title: "Cross-dApp stamps",
-    body: "Any LitVM dApp can grant you stamps. Use WheelX, MidasPredict, Forge — collect them all.",
+    body: "An open registry. WheelX, MidasPredict, Forge and others can grant stamps to your passport. Permissionless once authorized.",
     accent: "from-accent-rose to-accent-violet",
   },
   {
-    icon: Network,
-    title: "Composable on-chain",
-    body: "Any contract can read your reputation. Used by lending, gaming, and AI apps.",
-    accent: "from-accent-deep to-accent-violet",
+    icon: Users,
+    title: "On-chain referrals",
+    body: "Every share link carries a referrer. New mints auto-bind on-chain. Track invites and climb the social leaderboard.",
+    accent: "from-accent to-accent-gold",
   },
   {
-    icon: Sparkles,
-    title: "100% on-chain art",
-    body: "Your passport SVG is generated and stored on LitVM. No IPFS, no servers, just chain.",
-    accent: "from-accent to-accent-gold",
+    icon: ImageIcon,
+    title: "Dynamic OG images",
+    body: "Each public profile gets a real-time OG image. Twitter, Telegram, Warpcast all show your streak and stats inline.",
+    accent: "from-accent-violet to-accent-rose",
+  },
+  {
+    icon: Share2,
+    title: "Public profiles",
+    body: "Every wallet has a shareable URL at /p/[address] with passport, streaks, badges, stamps and referrer chain.",
+    accent: "from-accent to-accent-soft",
   },
 ];
 
@@ -59,19 +71,19 @@ export function FeatureGrid() {
           One identity. <span className="text-gradient">Every dApp.</span>
         </h2>
         <p className="mt-4 text-silver-300">
-          LitPass is the missing reputation primitive for Litecoin&apos;s first EVM L2.
-          Open, permissionless, and built to be used by every protocol.
+          The missing reputation primitive for Litecoin&apos;s first EVM L2.
+          Open, permissionless, and built to compose with every protocol.
         </p>
       </motion.div>
 
-      <div className="mt-16 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-16 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
         {features.map((f, i) => (
           <motion.div
             key={f.title}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: i * 0.08 }}
+            transition={{ duration: 0.5, delay: i * 0.06 }}
             whileHover={{ y: -4 }}
             className="glass group relative overflow-hidden rounded-2xl p-6 transition-shadow hover:shadow-glow"
           >

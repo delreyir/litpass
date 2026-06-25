@@ -2,14 +2,13 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Shield, Flame, Stamp } from "lucide-react";
+import { ArrowRight, Shield, Flame, Activity, Stamp } from "lucide-react";
 import { PassportPreview } from "./PassportPreview";
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 md:py-24 lg:grid-cols-2 lg:py-32">
-        {/* Left — copy */}
         <div className="relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -38,9 +37,9 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mt-6 max-w-xl text-lg leading-relaxed text-silver-300"
           >
-            Mint a soulbound passport. Check in daily to grow your streak.
-            Earn badges. Collect stamps from every LitVM dApp.
-            One on-chain reputation that follows you everywhere.
+            Mint a soulbound passport. Check in daily for streaks. Earn 7 streak
+            badges and 16 activity badges based on your real on-chain history.
+            One reputation, used by every LitVM dApp.
           </motion.p>
 
           <motion.div
@@ -57,10 +56,10 @@ export function Hero() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
-              href="/leaderboard"
+              href="/badges"
               className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 font-semibold text-silver-100 backdrop-blur transition-colors hover:bg-white/10"
             >
-              View leaderboard
+              View badges
             </Link>
           </motion.div>
 
@@ -68,15 +67,15 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/5 pt-8"
+            className="mt-12 grid max-w-lg grid-cols-4 gap-6 border-t border-white/5 pt-8"
           >
             <Feature icon={<Shield className="h-4 w-4" />} label="Soulbound" />
             <Feature icon={<Flame className="h-4 w-4" />} label="Daily streaks" />
+            <Feature icon={<Activity className="h-4 w-4" />} label="Activity proofs" />
             <Feature icon={<Stamp className="h-4 w-4" />} label="dApp stamps" />
           </motion.div>
         </div>
 
-        {/* Right — animated passport card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}

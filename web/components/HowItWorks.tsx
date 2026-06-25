@@ -5,18 +5,23 @@ import { motion } from "framer-motion";
 const steps = [
   {
     n: "01",
-    title: "Connect & mint",
-    body: "Connect your wallet to LitVM. Mint your soulbound passport in one transaction.",
+    title: "Mint your passport",
+    body: "Connect your wallet to LitVM LiteForge. Mint a soulbound passport in one transaction — your unique token ID is forever yours.",
   },
   {
     n: "02",
     title: "Check in daily",
-    body: "Open LitPass once a day, click check-in, and your on-chain streak grows.",
+    body: "Open LitPass once a day, click Check in. Your streak grows. Miss a day and it resets. Streak milestones mint badges automatically.",
   },
   {
     n: "03",
-    title: "Collect & build",
-    body: "Earn badges automatically. Collect stamps from every dApp. Climb the leaderboard.",
+    title: "Prove your activity",
+    body: "Claim activity badges based on real on-chain history: tx count, contracts deployed, unique contracts touched, wallet age, active days.",
+  },
+  {
+    n: "04",
+    title: "Share & grow",
+    body: "Your profile at /p/[wallet] has dynamic OG images. Share on X or Warpcast, every link auto-binds a referrer when someone mints.",
   },
 ];
 
@@ -34,30 +39,25 @@ export function HowItWorks() {
           How it works
         </div>
         <h2 className="mt-4 font-display text-4xl font-bold tracking-tight md:text-5xl">
-          From <span className="text-gradient">zero to reputation</span> in 3 steps
+          From <span className="text-gradient">zero to reputation</span> in 4 steps
         </h2>
       </motion.div>
 
-      <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {steps.map((s, i) => (
           <motion.div
             key={s.n}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.5, delay: i * 0.15 }}
+            transition={{ duration: 0.5, delay: i * 0.12 }}
             className="relative"
           >
-            <div className="glass relative rounded-2xl p-8">
+            <div className="glass relative h-full rounded-2xl p-7">
               <div className="font-mono text-sm text-accent">{s.n}</div>
-              <h3 className="mt-3 font-display text-2xl font-bold text-white">{s.title}</h3>
-              <p className="mt-3 leading-relaxed text-silver-300">{s.body}</p>
+              <h3 className="mt-3 font-display text-xl font-bold text-white">{s.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-silver-300">{s.body}</p>
             </div>
-            {i < steps.length - 1 && (
-              <div className="hidden md:absolute md:left-full md:top-1/2 md:flex md:h-px md:w-12 md:-translate-y-1/2 md:items-center">
-                <div className="h-px w-full bg-gradient-to-r from-accent/40 to-transparent" />
-              </div>
-            )}
           </motion.div>
         ))}
       </div>
