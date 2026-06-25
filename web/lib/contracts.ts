@@ -5,6 +5,7 @@ export const ADDR = deployment.contracts as {
   AchievementBadges: `0x${string}`;
   StampRegistry: `0x${string}`;
   ReferralTracker: `0x${string}`;
+  ActivityBadges: `0x${string}`;
 };
 
 export const DAY_LENGTH = deployment.dayLength as number;
@@ -105,4 +106,43 @@ export const referralAbi = [
   { type: "function", name: "bindReferrer", stateMutability: "nonpayable", inputs: [{ type: "address" }], outputs: [] },
   { type: "function", name: "referrerOf", stateMutability: "view", inputs: [{ type: "address" }], outputs: [{ type: "address" }] },
   { type: "function", name: "referralsOf", stateMutability: "view", inputs: [{ type: "address" }], outputs: [{ type: "uint32" }] },
+] as const;
+
+export const activityBadgesAbi = [
+  {
+    type: "function",
+    name: "claim",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "badgeId", type: "uint256" },
+      { name: "measuredValue", type: "uint256" },
+      { name: "nonce", type: "uint256" },
+      { name: "expiresAt", type: "uint256" },
+      { name: "signature", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  { type: "function", name: "badgeCount", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  {
+    type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [{ type: "address" }, { type: "uint256" }],
+    outputs: [{ type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "badges",
+    stateMutability: "view",
+    inputs: [{ type: "uint256" }],
+    outputs: [
+      { name: "name", type: "string" },
+      { name: "description", type: "string" },
+      { name: "color", type: "string" },
+      { name: "activity", type: "uint8" },
+      { name: "threshold", type: "uint256" },
+      { name: "exists", type: "bool" },
+    ],
+  },
+  { type: "function", name: "signer", stateMutability: "view", inputs: [], outputs: [{ type: "address" }] },
 ] as const;

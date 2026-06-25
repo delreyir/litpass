@@ -44,6 +44,17 @@ async function main() {
   const refsAddr = await refs.getAddress();
   console.log("ReferralTracker:   ", refsAddr);
 
+  // 5. ActivityBadges (requires a backend signer address)
+  const signerAddr = process.env.ATTESTATION_SIGNER_ADDRESS;
+  if (!signerAddr || signerAddr === "0x0000000000000000000000000000000000000000") {
+    throw new Error("Missing ATTESTATION_SIGNER_ADDRESS in .env — generate one and set it.");
+  }
+  const Activity = await ethers.getContractFactory("ActivityBadges");
+  const activity = await Activity.deploy(deployer.address, passAddr, signerAddr);
+  await activity.waitForDeployment();
+  const activityAddr = await activity.getAddress();
+  console.log("ActivityBadges:    ", activityAddr, "(signer:", signerAddr, ")");
+
   // Persist addresses for the frontend.
   const out = {
     chainId: Number((await ethers.provider.getNetwork()).chainId),
@@ -56,6 +67,7 @@ async function main() {
       AchievementBadges: badgesAddr,
       StampRegistry: stampsAddr,
       ReferralTracker: refsAddr,
+      ActivityBadges: activityAddr,
     },
     deployedAt: new Date().toISOString(),
   };
