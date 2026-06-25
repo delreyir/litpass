@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { LitPassLogo } from "./LitPassLogo";
 import { usePathname } from "next/navigation";
+import { useAccount } from "wagmi";
 import { cn } from "@/lib/utils";
 
-const nav = [
+const baseNav = [
   { href: "/",            label: "Home" },
   { href: "/passport",    label: "Passport" },
   { href: "/badges",      label: "Badges" },
@@ -16,6 +17,12 @@ const nav = [
 
 export function Header() {
   const pathname = usePathname();
+  const { address, isConnected } = useAccount();
+
+  const nav = isConnected && address
+    ? [...baseNav, { href: `/p/${address}`, label: "Profile" }]
+    : baseNav;
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -16 }}
@@ -33,7 +40,7 @@ export function Header() {
 
         <nav className="hidden items-center gap-1 md:flex">
           {nav.map((item) => {
-            const active = pathname === item.href;
+            const active = pathname === item.href || (item.href.startsWith("/p/") && pathname.startsWith("/p/"));
             return (
               <Link
                 key={item.href}

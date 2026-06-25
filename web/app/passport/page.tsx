@@ -1,20 +1,24 @@
 "use client";
 
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { ADDR, litPassAbi } from "@/lib/contracts";
+import { ADDR, litPassAbi, referralAbi } from "@/lib/contracts";
 import { motion, AnimatePresence } from "framer-motion";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { PassportCard } from "@/components/PassportCard";
 import { StreakRing } from "@/components/StreakRing";
 import { Countdown } from "@/components/Countdown";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
-import { Flame, Sparkles, Calendar, Award, ExternalLink } from "lucide-react";
+import { Flame, Sparkles, Calendar, Award, ExternalLink, Share2 } from "lucide-react";
 import { shortAddress, formatRelative } from "@/lib/utils";
+import { useReferrer } from "@/lib/useReferrer";
+import Link from "next/link";
 
 export default function PassportPage() {
   const { address, isConnected } = useAccount();
+  const { referrer, clear: clearRef } = useReferrer();
+  const [autoBindAttempted, setAutoBindAttempted] = useState(false);
 
   const { data: hasPass, refetch: refetchHasPass } = useReadContract({
     address: ADDR.LitPass,
@@ -40,15 +44,23 @@ export default function PassportPage() {
     query: { enabled: !!address && !!hasPass },
   });
 
+  const { data: currentReferrer, refetch: refetchReferrer } = useReadContract({
+    address: ADDR.ReferralTracker,
+    abi: referralAbi,
+    functionName: "referrerOf",
+    args: address ? [address] : undefined,
+    query: { enabled: !!address && !!hasPass },
+  });
+
   const { writeContract, data: txHash, isPending, error, reset } = useWriteContract();
   const { isLoading: isMining, isSuccess: isMined } = useWaitForTransactionReceipt({ hash: txHash });
 
-  // refetch state when a tx is confirmed
   useEffect(() => {
     if (!isMined) return;
     refetchHasPass();
     refetchPass();
     refetchCanCheckIn();
+    refetchReferrer();
     confetti({
       particleCount: 120,
       spread: 80,
@@ -57,11 +69,38 @@ export default function PassportPage() {
     });
     toast.success("Confirmed on LitVM");
     reset();
-  }, [isMined, refetchHasPass, refetchPass, refetchCanCheckIn, reset]);
+  }, [isMined, refetchHasPass, refetchPass, refetchCanCheckIn, refetchReferrer, reset]);
 
   useEffect(() => {
     if (error) toast.error(error.message.split("\n")[0]);
   }, [error]);
+
+  useEffect(() => {
+    if (isMined) toast.dismiss("tx");
+  }, [isMined]);
+
+  // Auto-bind referrer once the user has a passport and a stored ?ref= exists.
+  useEffect(() => {
+    if (!hasPass || !address || !referrer || autoBindAttempted) return;
+    // skip if already bound or self-referral
+    if (currentReferrer && currentReferrer !== "0x0000000000000000000000000000000000000000") return;
+    if (referrer.toLowerCase() === address.toLowerCase()) {
+      clearRef();
+      return;
+    }
+    setAutoBindAttempted(true);
+    writeContract({
+      address: ADDR.ReferralTracker,
+      abi: referralAbi,
+      functionName: "bindReferrer",
+      args: [referrer],
+    });
+    toast.loading("Binding referrer…", { id: "tx" });
+  }, [hasPass, address, referrer, currentReferrer, autoBindAttempted, clearRef, writeContract]);
+
+  useEffect(() => {
+    if (isMined && referrer && autoBindAttempted) clearRef();
+  }, [isMined, referrer, autoBindAttempted, clearRef]);
 
   const onMint = () => {
     writeContract({ address: ADDR.LitPass, abi: litPassAbi, functionName: "mint" });
@@ -73,10 +112,6 @@ export default function PassportPage() {
     toast.loading("Checking in…", { id: "tx" });
   };
 
-  useEffect(() => {
-    if (isMined) toast.dismiss("tx");
-  }, [isMined]);
-
   const streak = pass ? Number(pass.currentStreak) : 0;
   const longest = pass ? Number(pass.longestStreak) : 0;
   const checkIns = pass ? Number(pass.totalCheckIns) : 0;
@@ -85,11 +120,7 @@ export default function PassportPage() {
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-12">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <h1 className="font-display text-4xl font-bold tracking-tight md:text-5xl">
           Your <span className="text-gradient">passport</span>
         </h1>
@@ -97,6 +128,22 @@ export default function PassportPage() {
           Mint once. Check in daily. Your streak, badges, and stamps live on-chain forever.
         </p>
       </motion.div>
+
+      {referrer && !hasPass && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 inline-flex items-center gap-2 rounded-xl border border-accent/30 bg-accent/10 px-4 py-2 text-sm"
+        >
+          <Sparkles className="h-3.5 w-3.5 text-accent" />
+          <span className="text-silver-200">
+            Invited by{" "}
+            <Link href={`/p/${referrer}`} className="font-mono text-accent hover:underline">
+              {shortAddress(referrer)}
+            </Link>
+          </span>
+        </motion.div>
+      )}
 
       {!isConnected ? (
         <div className="mt-16 flex flex-col items-center gap-6">
@@ -111,7 +158,6 @@ export default function PassportPage() {
         <MintPanel onMint={onMint} pending={isPending || isMining} />
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-2">
-          {/* Left — passport card */}
           <div className="flex justify-center lg:justify-end">
             <PassportCard
               tokenId={tokenId}
@@ -121,7 +167,6 @@ export default function PassportPage() {
             />
           </div>
 
-          {/* Right — controls */}
           <div className="space-y-6">
             <div className="glass rounded-2xl p-8">
               <div className="flex items-center justify-between">
@@ -129,9 +174,7 @@ export default function PassportPage() {
                   <Flame className="h-4 w-4 text-accent-rose" />
                   Today&apos;s check-in
                 </div>
-                <span className="font-mono text-xs text-silver-400">
-                  {shortAddress(address)}
-                </span>
+                <span className="font-mono text-xs text-silver-400">{shortAddress(address)}</span>
               </div>
 
               <div className="mt-6 flex items-center justify-between gap-6">
@@ -184,6 +227,19 @@ export default function PassportPage() {
                 )}
               </AnimatePresence>
             </div>
+
+            {address && (
+              <Link
+                href={`/p/${address}`}
+                className="glass flex items-center justify-between rounded-xl px-5 py-4 text-sm transition-colors hover:bg-white/5"
+              >
+                <span className="inline-flex items-center gap-2 text-silver-200">
+                  <Share2 className="h-4 w-4 text-accent" />
+                  View & share your public profile
+                </span>
+                <ExternalLink className="h-4 w-4 text-silver-400" />
+              </Link>
+            )}
 
             {txHash && (
               <a
