@@ -19,7 +19,9 @@ async function main() {
   const pass = await LitPass.deploy(deployer.address, TESTNET_DAY_LENGTH);
   await pass.waitForDeployment();
   const passAddr = await pass.getAddress();
-  console.log("LitPass:           ", passAddr);
+  const passDeployTx = pass.deploymentTransaction();
+  const passDeployBlock = passDeployTx?.blockNumber ?? null;
+  console.log("LitPass:           ", passAddr, "block:", passDeployBlock);
 
   // 2. AchievementBadges
   const Badges = await ethers.getContractFactory("AchievementBadges");
@@ -48,6 +50,7 @@ async function main() {
     network: network.name,
     deployer: deployer.address,
     dayLength: TESTNET_DAY_LENGTH,
+    deploymentBlock: passDeployBlock,
     contracts: {
       LitPass: passAddr,
       AchievementBadges: badgesAddr,

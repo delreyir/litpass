@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { publicClient } from "@/lib/server";
-import { ADDR, litPassAbi } from "@/lib/contracts";
+import { ADDR, litPassAbi, DEPLOYMENT_BLOCK } from "@/lib/contracts";
 
 // Recompute every 30 seconds. New check-ins surface quickly without hammering
 // the RPC.
@@ -23,7 +23,7 @@ export async function GET() {
       address: ADDR.LitPass,
       abi: litPassAbi,
       eventName: "CheckedIn",
-      fromBlock: 0n,
+      fromBlock: DEPLOYMENT_BLOCK,
       toBlock: "latest",
     });
 

@@ -8,6 +8,7 @@ export const ADDR = deployment.contracts as {
 };
 
 export const DAY_LENGTH = deployment.dayLength as number;
+export const DEPLOYMENT_BLOCK = BigInt(deployment.deploymentBlock ?? 0);
 
 // ---------------- ABIs (only the symbols we read/write from the UI) ----------------
 
