@@ -4,7 +4,7 @@ The on-chain identity & reputation layer for **LitVM** - Litecoin's first EVM-co
 
 Soulbound passports, daily check-in streaks, achievement badges, real on-chain activity badges, and cross-dApp stamps. All on chain ID **4441**.
 
-🔗 **Live:** https://litpass.vercel.app  
+🔗 **Live:** https://litpass.xyz 
 🧱 **Network:** LitVM LiteForge Testnet (chain 4441)  
 📦 **Repo:** https://github.com/delreyir/litpass
 
